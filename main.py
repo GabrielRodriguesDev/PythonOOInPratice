@@ -1,11 +1,16 @@
-from console import CashMachineConsole
+from console import AuthBankAccountConsole, CashMachineConsole
 from utils import clear, header
 
 def main():
     clear()
     header()
-    CashMachineConsole.callOperation()
-    
+    if AuthBankAccountConsole.isAuth():
+        clear()
+        header()
+        CashMachineConsole.callOperation()
+    else:
+        print('Conta inválida')
+        
 if __name__ == '__main__':
     while True:
         main()
