@@ -40,8 +40,9 @@ class ShowBalanceOperation:
     
     @staticmethod
     def doOperation():
-        print('Mostrar Saldo')
-        print(AuthBankAccount.bankAccountAuthenticated)
+        banckAccount = AuthBankAccount.bankAccountAuthenticated
+        print('Seu saldo é %s' % banckAccount.value) # Mostrando valor sem ser por concatenação, forma parecida com a do C
+        
 
 class WithDrawOperation:
     
