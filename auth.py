@@ -6,13 +6,13 @@ class AuthBankAccount:
     @staticmethod
     def authenticate(accountNumber, password):
         for bankAccount in accountList:
-            if AuthBankAccount.hasBankAccountValid(bankAccount, accountNumber, password):
+            if AuthBankAccount.__hasBankAccountValid(bankAccount, accountNumber, password):
                 AuthBankAccount.bankAccountAuthenticated = bankAccount
                 return bankAccount
         return False
     
     @staticmethod
-    def hasBankAccountValid(bankAccount, accountNumber, password):
+    def __hasBankAccountValid(bankAccount, accountNumber, password): #Dois anderline antes de método ou variavel o torna privado (Acessivel apenas para a própria classe)
         return bankAccount.checkAccountNumber(accountNumber) and \
                 bankAccount.checkPassword(password)
 

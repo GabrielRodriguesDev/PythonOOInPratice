@@ -15,22 +15,24 @@ class CashMachineConsole: #DICA: Abstraia o código em classes para que fique fa
     
     @staticmethod # DICA: Métodos estáticos devem ser usados quando o método não vai receber ou gerenciar  "nenhum atributo da classe", apenas processar alguma logica
     def callOperation():
-        optionTyped = CashMachineConsole.getMenuOptionsTyped()
+        optionTyped = CashMachineConsole.__getMenuOptionsTyped()
         CashMachinheOperation.doOperation(optionTyped)
     
     @staticmethod
-    def getMenuOptionsTyped():
-        print("1 - Saldo")
-        print("2 - Saque")
+    def __getMenuOptionsTyped():
+        print(CashMachinheOperation.OPERATIONSHOWBALANCE + " - Saldo")
+        print(CashMachinheOperation.OPERATIONWITHDRAW + " - Saque")
         return input('Escolha uma das opções acima: ')
 
 class CashMachinheOperation:       
+    OPERATIONSHOWBALANCE = '1'
+    OPERATIONWITHDRAW = '2'
     
     @staticmethod
     def doOperation(option):
-        if option == '1':
+        if option == CashMachinheOperation.OPERATIONSHOWBALANCE:
             ShowBalanceOperation.doOperation()
-        elif option == '2':
+        elif option == CashMachinheOperation.OPERATIONWITHDRAW:
             WithDrawOperation.doOperation()
         
         
@@ -38,8 +40,9 @@ class ShowBalanceOperation:
     
     @staticmethod
     def doOperation():
-        print('Mostrar Saldo')
-        print(AuthBankAccount.bankAccountAuthenticated)
+        banckAccount = AuthBankAccount.bankAccountAuthenticated
+        print('Seu saldo é %s' % banckAccount.value) # Mostrando valor sem ser por concatenação, forma parecida com a do C
+        
 
 class WithDrawOperation:
     
