@@ -7,7 +7,7 @@ def main():
     if AuthBankAccountConsole.isAuth():
         clear()
         header()
-        CashMachineConsole.callOp00eration()
+        CashMachineConsole.callOperation()
     else:
         print('Conta inválida')
         

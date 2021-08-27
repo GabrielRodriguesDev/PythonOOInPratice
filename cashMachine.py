@@ -11,7 +11,39 @@ class BankAccount:
     
     def checkPassword(self, password):
         return self.password == password
+    
+    def balanceDebit(self, value):
+        self.value -= value
+        
+        
+class CashMachineInsertMoneyBill:
+    @staticmethod
+    def insertMoneyBill(moneyBill, amount):
+        cashMachine = CashMachine({
+                '20': 5,
+                '50': 5,
+                '100': 5,
+            })
+        cashMachine.moneySlips[moneyBill] += amount
+        return cashMachine
 
+class CashMachineWithdraw:
+    
+    @staticmethod
+    def withdraw(bankAccount, value):
+        cashMachine = CashMachine(
+            {
+                '20': 5,
+                '50': 5,
+                '100': 5,
+            }
+        )
+        money_slips_user = cashMachine.withdraw(value)
+        if money_slips_user:
+            bankAccount.balanceDebit(value)
+        return cashMachine
+        
+        
 class CashMachine:
     def __init__(self, moneySlips):
         self.moneySlips  = moneySlips
@@ -34,13 +66,18 @@ class CashMachine:
         moneyBillInt = int(moneyBill)
         if self.valueRemainig // moneyBillInt > 0 and self.valueRemainig // moneyBillInt <= self.moneySlips[
             moneyBill]:
-            self.moneySplipsUser[moneyBillInt] = self.valueRemainig // moneyBillInt
+            self.moneySplipsUser[moneyBill] = self.valueRemainig // moneyBillInt
             self.valueRemainig = (self.valueRemainig - ((self.valueRemainig // moneyBillInt) * moneyBillInt))
-    
+            
     def __decreaseMoneySlips(self):
         for moneyBill in self.moneySplipsUser:
+            #moneyBillStr = str(moneyBill)
             self.moneySlips[moneyBill] -= self.moneySplipsUser[moneyBill]
+            #print(self.moneySlips[moneyBillStr])
+            #print(self.moneySplipsUser[moneyBillStr])
+            
         
+
 accountList = [
     BankAccount('0001-02', 'Gabriel Silva', '123456', 100, True),
     BankAccount('0002-02', 'Andre Silva', '123456', 1000, False)
