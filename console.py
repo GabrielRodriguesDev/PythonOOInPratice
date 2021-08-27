@@ -1,6 +1,8 @@
 
-from cashMachine import BankAccount, CashMachineWithdraw
+from cashMachine import CashMachineInsertMoneyBill, CashMachineWithdraw
 from auth import AuthBankAccount
+import socket
+
 
 
 class AuthBankAccountConsole:
@@ -23,18 +25,29 @@ class CashMachineConsole: #DICA: Abstraia o código em classes para que fique fa
     def __getMenuOptionsTyped():
         print(CashMachinheOperation.OPERATIONSHOWBALANCE + " - Saldo")
         print(CashMachinheOperation.OPERATIONWITHDRAW + " - Saque")
+        bankAccount = AuthBankAccount.bankAccountAuthenticated
+        if bankAccount.admin:
+            print(CashMachinheOperation.OPERATIONINSERTMONEYBILL + " - Inserir cédulas")
         return input('Escolha uma das opções acima: ')
 
 class CashMachinheOperation:       
     OPERATIONSHOWBALANCE = '1'
     OPERATIONWITHDRAW = '2'
+    OPERATIONINSERTMONEYBILL = '10'
     
     @staticmethod
     def doOperation(option):
+        bankAccount = AuthBankAccount.bankAccountAuthenticated
         if option == CashMachinheOperation.OPERATIONSHOWBALANCE:
             ShowBalanceOperation.doOperation()
         elif option == CashMachinheOperation.OPERATIONWITHDRAW:
             WithDrawOperation.doOperation()
+        elif option == CashMachinheOperation.OPERATIONINSERTMONEYBILL and bankAccount.admin:
+            InsertMoneyBillOperation.doOperation()
+        else:
+            print('Opção inválida')
+            
+
         
         
 class ShowBalanceOperation:
@@ -59,3 +72,10 @@ class WithDrawOperation:
             print("Pegue as notas")
             print(cashMachine.moneySplipsUser)
             print(vars(bankAccount))
+
+class InsertMoneyBillOperation:
+    def doOperation():
+        amountTyped = input('Digite a quantidade de cédulas: ')
+        moneyBillTyped = input('Digite a cédula a ser incluída: ')
+        cashMachine = CashMachineInsertMoneyBill.insertMoneyBill(moneyBillTyped, int(amountTyped))
+        print(cashMachine.moneySlips)

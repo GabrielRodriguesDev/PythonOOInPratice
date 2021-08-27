@@ -15,6 +15,18 @@ class BankAccount:
     def balanceDebit(self, value):
         self.value -= value
         
+        
+class CashMachineInsertMoneyBill:
+    @staticmethod
+    def insertMoneyBill(moneyBill, amount):
+        cashMachine = CashMachine({
+                '20': 5,
+                '50': 5,
+                '100': 5,
+            })
+        cashMachine.moneySlips[moneyBill] += amount
+        return cashMachine
+
 class CashMachineWithdraw:
     
     @staticmethod
