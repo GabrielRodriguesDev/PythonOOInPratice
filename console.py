@@ -1,4 +1,5 @@
 
+from cashMachine import BankAccount, CashMachineWithdraw
 from auth import AuthBankAccount
 
 
@@ -48,4 +49,13 @@ class WithDrawOperation:
     
     @staticmethod
     def doOperation():
-        print('Sacar dinheiro')
+        valueTyped = input("Digite o valor a ser sacado: ")
+        valueInt =  int(valueTyped)
+        bankAccount = AuthBankAccount.bankAccountAuthenticated
+        cashMachine = CashMachineWithdraw.withdraw(bankAccount,valueInt)
+        if cashMachine.valueRemainig != 0:
+            print("O caixa não tem cédulas disponveis para este valor")
+        else:
+            print("Pegue as notas")
+            print(cashMachine.moneySplipsUser)
+            print(vars(bankAccount))
