@@ -1,4 +1,4 @@
-from file import MoneySlipsFileReader
+from file import MoneySlipsFileReader, MoneySlipsFileWriter
 
 
 class BankAccount:
@@ -24,17 +24,18 @@ class CashMachineInsertMoneyBill:
     def insertMoneyBill(moneyBill, amount):
         cashMachine = CashMachineGetter().get()
         cashMachine.moneySlips[moneyBill] += amount
+        MoneySlipsFileWriter().writeMoneySlips(cashMachine.moneySlips)
         return cashMachine
 
 class CashMachineWithdraw:
     
     @staticmethod
     def withdraw(bankAccount, value):
-        cashMachine = CashMachineGetter().get()
-            
+        cashMachine = CashMachineGetter().get()   
         money_slips_user = cashMachine.withdraw(value)
         if money_slips_user:
             bankAccount.balanceDebit(value)
+            MoneySlipsFileWriter().writeMoneySlips(cashMachine.moneySlips)
         return cashMachine
 
 class CashMachineGetter:
@@ -62,8 +63,7 @@ class CashMachine:
             
     def __calculateMoneySlipsUser(self, moneyBill):
         moneyBillInt = int(moneyBill)
-        if self.valueRemainig // moneyBillInt > 0 and self.valueRemainig // moneyBillInt <= self.moneySlips[
-            moneyBill]:
+        if self.valueRemainig // moneyBillInt > 0 and self.valueRemainig // moneyBillInt <= self.moneySlips[moneyBill]:
             self.moneySplipsUser[moneyBill] = self.valueRemainig // moneyBillInt
             self.valueRemainig = (self.valueRemainig - ((self.valueRemainig // moneyBillInt) * moneyBillInt))
             
@@ -77,7 +77,7 @@ class CashMachine:
         
 
 accountList = [
-    BankAccount('0001-02', 'Gabriel Silva', '123456', 100, True),
+    BankAccount('0001-02', 'Gabriel Silva', '123456', 1000, True),
     BankAccount('0002-02', 'Andre Silva', '123456', 1000, False)
 ]
 

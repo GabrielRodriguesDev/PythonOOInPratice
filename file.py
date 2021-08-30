@@ -46,23 +46,23 @@ class MoneySlipsFileReader(BankFile):
 
 class MoneySlipsFileWriter(BankFile):
     def writeMoneySlips(self, moneySplips):
-        lines = self.__readlines()
+        lines = self._readlines()
         lines[0] = self.__formatLinesToWrite(moneySplips)
         self.writeLines(lines)
     
-    def __readlines(self):
-        self._file = self._openFileBank('w')
+    def _readlines(self):
+        self._file = self._openFileBank('r')
         lines = self._file.readlines()
         self._file.close()
         return lines
     
     def writeLines(self, lines):
-        self._file = self._openFileBank('w')
+        self._file = self._openFileBank('w')    
         self._file.writelines(lines)
         self._file.close()
     
     def __formatLinesToWrite(self, moneySplips):
         line = ""
         for moneyBill, value in moneySplips.items():
-            line += self._file.write(moneyBill + '=' + str(value) + ';')
+            line += moneyBill + '=' + str(value) + ';'
         return line + '\n'
