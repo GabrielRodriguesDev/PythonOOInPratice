@@ -1,4 +1,4 @@
-import os
+import ast
 class BankFile:
     BASE_PATH =  'D:/Technology/Sistemas/Gabriel/Python/PythonOOInPratice/Files'
     
@@ -8,6 +8,43 @@ class BankFile:
     def _openFileBank(self, mode):
         return open(BankFile.BASE_PATH + '/_bank_file.dat', mode)
     
+    def _readlines(self):
+        self._file = self._openFileBank('r')
+        lines = self._file.readlines()
+        self._file.close()
+        return lines
+    
+    
+    
+class BankAccountFileReader(BankFile):
+    
+    def getAccount(self, accountNumber):
+        lines = self._readlines()
+        lines = self.__skipFirstLine(lines)
+        bankAccount = None
+        for line in lines:
+            bankAccountCreated = self.__createBankAccountFromFileLine(line)
+            if bankAccountCreated.checkAccountNumber(accountNumber):
+                bankAccount = bankAccountCreated
+                break
+        return bankAccount
+    
+    
+    def __createBankAccountFromFileLine(self, line):
+        accountData = line.split(';')
+        from cashMachine import BankAccount
+        return BankAccount(
+            accountData[0], 
+            accountData[1], 
+            accountData[2], 
+            float(accountData[3]), 
+            ast.literal_eval(accountData[4])
+        )
+
+    def __skipFirstLine(self, lines):
+        return lines[1:len(lines)]
+
+
 class MoneySlipsFileReader(BankFile):
     
     def __init__(self):
@@ -50,11 +87,7 @@ class MoneySlipsFileWriter(BankFile):
         lines[0] = self.__formatLinesToWrite(moneySplips)
         self.writeLines(lines)
     
-    def _readlines(self):
-        self._file = self._openFileBank('r')
-        lines = self._file.readlines()
-        self._file.close()
-        return lines
+    
     
     def writeLines(self, lines):
         self._file = self._openFileBank('w')    

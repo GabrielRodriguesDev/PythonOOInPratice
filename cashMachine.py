@@ -1,5 +1,3 @@
-from file import MoneySlipsFileReader, MoneySlipsFileWriter
-
 
 class BankAccount:
     def __init__( self, accountNumber, name, password, value, admin ):
@@ -24,6 +22,7 @@ class CashMachineInsertMoneyBill:
     def insertMoneyBill(moneyBill, amount):
         cashMachine = CashMachineGetter().get()
         cashMachine.moneySlips[moneyBill] += amount
+        from file import MoneySlipsFileWriter
         MoneySlipsFileWriter().writeMoneySlips(cashMachine.moneySlips)
         return cashMachine
 
@@ -35,11 +34,13 @@ class CashMachineWithdraw:
         money_slips_user = cashMachine.withdraw(value)
         if money_slips_user:
             bankAccount.balanceDebit(value)
+            from file import MoneySlipsFileWriter
             MoneySlipsFileWriter().writeMoneySlips(cashMachine.moneySlips)
         return cashMachine
 
 class CashMachineGetter:
     def get(self):
+            from file import MoneySlipsFileReader
             moneySlips = MoneySlipsFileReader().getMoneySlips()
             return CashMachine(moneySlips)
         
