@@ -1,4 +1,4 @@
-import os
+import ast
 class BankFile:
     BASE_PATH =  'D:/Technology/Sistemas/Gabriel/Python/PythonOOInPratice/Files'
     
@@ -17,22 +17,30 @@ class BankFile:
     
     
 class BankAccountFileReader(BankFile):
+    
     def getAccount(self, accountNumber):
         lines = self._readlines()
         lines = self.__skipFirstLine(lines)
         bankAccount = None
         for line in lines:
-            line
+            bankAccountCreated = self.__createBankAccountFromFileLine(line)
+            if bankAccountCreated.checkAccountNumber(accountNumber):
+                bankAccount = bankAccountCreated
+                break
         return bankAccount
     
     
     def __createBankAccountFromFileLine(self, line):
         accountData = line.split(';')
+        from cashMachine import BankAccount
         return BankAccount(
-            accountData[0], accountData[1], accountData[2], accountData[3]
+            accountData[0], 
+            accountData[1], 
+            accountData[2], 
+            float(accountData[3]), 
+            ast.literal_eval(accountData[4])
         )
-    
-        
+
     def __skipFirstLine(self, lines):
         return lines[1:len(lines)]
 

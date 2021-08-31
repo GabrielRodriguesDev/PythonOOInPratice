@@ -1,3 +1,4 @@
+from file import BankAccountFileReader
 from cashMachine import accountList
 
 class AuthBankAccount:
@@ -5,10 +6,11 @@ class AuthBankAccount:
     
     @staticmethod
     def authenticate(accountNumber, password):
-        for bankAccount in accountList:
-            if AuthBankAccount.__hasBankAccountValid(bankAccount, accountNumber, password):
-                AuthBankAccount.bankAccountAuthenticated = bankAccount
-                return bankAccount
+        bankAccountFr = BankAccountFileReader()
+        bankAccount = bankAccountFr.getAccount(accountNumber)
+        if bankAccount and  AuthBankAccount.__hasBankAccountValid(bankAccount, accountNumber, password):
+            AuthBankAccount.bankAccountAuthenticated = bankAccount
+            return bankAccount
         return False
     
     @staticmethod
