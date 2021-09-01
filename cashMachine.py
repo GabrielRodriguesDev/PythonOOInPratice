@@ -33,10 +33,16 @@ class CashMachineWithdraw:
         cashMachine = CashMachineGetter().get()   
         money_slips_user = cashMachine.withdraw(value)
         if money_slips_user:
-            bankAccount.balanceDebit(value)
+            CashMachineWithdraw.__balanceDebit(bankAccount, value)
             from file import MoneySlipsFileWriter
             MoneySlipsFileWriter().writeMoneySlips(cashMachine.moneySlips)
         return cashMachine
+    
+    @staticmethod
+    def __balanceDebit(bankAccount, value):
+            bankAccount.balanceDebit(value)
+            from file import BankAccountFileWriter
+            BankAccountFileWriter().writeBankAccount(bankAccount)
 
 class CashMachineGetter:
     def get(self):
