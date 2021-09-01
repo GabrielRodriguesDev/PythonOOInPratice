@@ -18,6 +18,19 @@ class BankFile:
     
 class BankAccountFileReader(BankFile):
     
+    ADJUSTINGTHEINDEX = 1
+    
+    def getLineIndexOfBankAccount(self, accountNumber):
+        lines = self._readlines() #Lendo as linhas
+        lines = self.__skipFirstLine(lines) #Ignorando a primeira linha
+        lineIndex = -1
+        for index, line in enumerate(lines):
+            bankAccountCreated = self.__createBankAccountFromFileLine(line)
+            if bankAccountCreated.checkAccountNumber(accountNumber):
+                lineIndex =  index
+                break
+        return lineIndex + self.ADJUSTINGTHEINDEX
+            
     def getAccount(self, accountNumber):
         lines = self._readlines()
         lines = self.__skipFirstLine(lines)
@@ -43,7 +56,22 @@ class BankAccountFileReader(BankFile):
 
     def __skipFirstLine(self, lines):
         return lines[1:len(lines)]
+    
+class BankAccountFileWriter(BankFile):
+    def writeBankAccount(self, bankAccount):
+        lineIndexToUpdate = BankAccountFileReader.getLineIndexOfBankAccount(bankAccount.accountNumber)
+        lines = self._readlines()
+        lines[lineIndexToUpdate]
 
+    def __formatLoneToWrite(bankAccount):
+        line ="%s;%s;%s;%s;%s;" % (
+            bankAccount.accountNumber,
+            bankAccount.name,
+            bankAccount.password,
+            str(bankAccount.value),
+            str(bankAccount.admin)
+        )
+        return line + '\n'
 
 class MoneySlipsFileReader(BankFile):
     
