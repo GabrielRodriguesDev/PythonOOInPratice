@@ -15,9 +15,26 @@ class BankFile:
         return lines
     
     
+    def _writeLines(self, lines):
+        self._file = self._openFileBank('w')    
+        self._file.writelines(lines)
+        self._file.close()
+    
+    
     
 class BankAccountFileReader(BankFile):
     
+    def getLineIndexOfBankAccount(self, accountNumber):
+        lines = self._readlines() #Lendo as linhas
+        lines = self.__skipFirstLine(lines) #Ignorando a primeira linha
+        lineIndex = -1
+        for index, line in enumerate(lines):
+            bankAccountCreated = self.__createBankAccountFromFileLine(line)
+            if bankAccountCreated.checkAccountNumber(accountNumber):
+                lineIndex = index
+                break
+        return lineIndex + 1
+
     def getAccount(self, accountNumber):
         lines = self._readlines()
         lines = self.__skipFirstLine(lines)
@@ -28,8 +45,7 @@ class BankAccountFileReader(BankFile):
                 bankAccount = bankAccountCreated
                 break
         return bankAccount
-    
-    
+
     def __createBankAccountFromFileLine(self, line):
         accountData = line.split(';')
         from cashMachine import BankAccount
@@ -43,14 +59,30 @@ class BankAccountFileReader(BankFile):
 
     def __skipFirstLine(self, lines):
         return lines[1:len(lines)]
+    
+class BankAccountFileWriter(BankFile):
+    def writeBankAccount(self, bankAccount):
+        lineIndexToUpdate = BankAccountFileReader().getLineIndexOfBankAccount(bankAccount.accountNumber)
+        lines = self._readlines()
+        lines[lineIndexToUpdate] = self.__formatLoneToWrite(bankAccount)
+        self._writeLines(lines)
 
+    def __formatLoneToWrite(self,bankAccount):
+        line ="%s;%s;%s;%s;%s;" % (
+            bankAccount.accountNumber,
+            bankAccount.name,
+            bankAccount.password,
+            str(bankAccount.value),
+            str(bankAccount.admin)
+        )
+        return line + '\n'
 
 class MoneySlipsFileReader(BankFile):
     
     def __init__(self):
         super().__init__() #Se referenciando ao construtor da classse pai
         self.__moneySlips = {}
-    
+
     def getMoneySlips(self):
         self._file = self._openFileBank('r')
         line = self._file.readline()
@@ -63,7 +95,7 @@ class MoneySlipsFileReader(BankFile):
             else:
                 line = line[semiColonPosition + 1:len(line)]
         return self.__moneySlips  
-    
+
 
     def __hasMoneyBillToRead(self, semiColonPosition, line):
         return semiColonPosition + 1 == len(line) 
@@ -85,15 +117,8 @@ class MoneySlipsFileWriter(BankFile):
     def writeMoneySlips(self, moneySplips):
         lines = self._readlines()
         lines[0] = self.__formatLinesToWrite(moneySplips)
-        self.writeLines(lines)
-    
-    
-    
-    def writeLines(self, lines):
-        self._file = self._openFileBank('w')    
-        self._file.writelines(lines)
-        self._file.close()
-    
+        self._writeLines(lines)
+
     def __formatLinesToWrite(self, moneySplips):
         line = ""
         for moneyBill, value in moneySplips.items():
