@@ -15,6 +15,12 @@ class BankFile:
         return lines
     
     
+    def _writeLines(self, lines):
+        self._file = self._openFileBank('w')    
+        self._file.writelines(lines)
+        self._file.close()
+    
+    
     
 class BankAccountFileReader(BankFile):
     
@@ -61,7 +67,8 @@ class BankAccountFileWriter(BankFile):
     def writeBankAccount(self, bankAccount):
         lineIndexToUpdate = BankAccountFileReader.getLineIndexOfBankAccount(bankAccount.accountNumber)
         lines = self._readlines()
-        lines[lineIndexToUpdate]
+        lines[lineIndexToUpdate] = self.__formatLoneToWrite(bankAccount)
+        self._writeLines(lines)
 
     def __formatLoneToWrite(bankAccount):
         line ="%s;%s;%s;%s;%s;" % (
@@ -113,14 +120,10 @@ class MoneySlipsFileWriter(BankFile):
     def writeMoneySlips(self, moneySplips):
         lines = self._readlines()
         lines[0] = self.__formatLinesToWrite(moneySplips)
-        self.writeLines(lines)
+        self._writeLines(lines)
     
     
     
-    def writeLines(self, lines):
-        self._file = self._openFileBank('w')    
-        self._file.writelines(lines)
-        self._file.close()
     
     def __formatLinesToWrite(self, moneySplips):
         line = ""
